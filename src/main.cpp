@@ -43,7 +43,7 @@ void jump(Entity *entity)
 }
 
 //šo drīzāk var kā event kad visus 
-void move()
+void move() {}
 
 uint16_t getTick()
 {
