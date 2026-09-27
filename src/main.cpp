@@ -30,12 +30,15 @@ struct Entity
 
 struct GoodEntity
 {
-
+  
 };
 
-static constexpr uint16_t tick = 100;
+static constexpr uint16_t tickInterval = 100;
 //max buffer potenciāli jāmaina
-static constexpr uint16_t customFigureMaxBuffer = sizeof(byte)*8;
+static constexpr uint8_t customFigureMaxBuffer = sizeof(byte)*8;
+static constexpr uint8_t entityMaxBuffer = sizeof(Entity) * 7 + sizeof(GoodEntity);
+
+static uint64_t lastTick = 0;
 
 void jump(Entity *entity)
 {
@@ -45,12 +48,9 @@ void jump(Entity *entity)
 //šo drīzāk var kā event kad visus 
 void move() {}
 
-uint16_t getTick()
-{
-  return (uint16_t)millis() / tick;
-}
-
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+
 
 void setup() {
   
@@ -62,9 +62,14 @@ void setup() {
   lcd.createChar(1, heart);
   lcd.setCursor(1, 1);
   lcd.write(byte(1));
+  
+  
 }
 
 void loop() 
 {
-
+  if (millis()-lastTick > tickInterval) 
+  {
+    lastTick = millis();
+  }
 }
