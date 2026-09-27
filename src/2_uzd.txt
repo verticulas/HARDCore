@@ -1,0 +1,105 @@
+#include "HardwareSerial.h"
+// #include <Arduino.h>
+// #include <avr/interrupt.h>
+// #include <sys/types.h>
+
+// // class LightPin
+// // {
+// //     // String num;
+// //     uint8_t pin;
+// // public:
+// //     LightPin(uint8_t pin)
+// //     {
+// //         // this->num = num;
+// //         this->pin = pin;
+// //     }
+    
+// //     void flashLight(String word, unsigned long time = 1000)
+// //     {
+// //         pinMode(this->pin, OUTPUT);
+
+// //         digitalWrite(this->pin, HIGH);
+// //         // Serial.print();
+// //         Serial.print(word);
+// //         delay(time);
+
+// //         digitalWrite(this->pin, LOW);
+// //     }
+// // };
+
+// void flashLight()
+// {
+
+// }
+
+// void setup()
+// {
+//     Serial.begin(9600);
+    
+//     pinMode(13, OUTPUT);
+//     pinMode(12, OUTPUT);
+//     pinMode(11, OUTPUT);
+    
+//     for(int i = 0; i <= 100; i++)
+//     {
+//         Serial.print(i);
+//         Serial.print(": ");
+//         if(i % 3 == 0 && i % 5 == 0)
+//         {
+//             digitalWrite(12, HIGH);
+//             digitalWrite(13, HIGH);
+//             Serial.print("FIZZBUZZ");
+//             delay(1000);
+//             digitalWrite(12, LOW);
+//             digitalWrite(13, LOW);
+//         }
+//         else if(i % 3 == 0)
+//         {
+//             digitalWrite(12, HIGH);
+//             Serial.print("FIZZ");
+//             delay(1000);
+//             digitalWrite(12, LOW);
+//         }
+//         else if(i % 3 == 0 && i % 5 == 0)
+//         {
+//             digitalWrite(13, HIGH);
+//             Serial.print("BUZZ");
+//             delay(1000);
+//             digitalWrite(13, LOW);
+//         }
+//         else
+//         {
+//             digitalWrite(11, HIGH);
+//             delay(250);
+//             digitalWrite(11, LOW);
+//         }
+//         Serial.println();
+//     }
+//     digitalWrite(13, LOW);
+// }
+
+// void loop() {}
+
+
+// // constexpr uint8_t LED_PIN = 9;
+// // constexpr uint8_t BTN_PIN = 2;
+
+// // void setup() 
+// // {
+// //     Serial.begin(115200);
+// //     pinMode(LED_PIN, OUTPUT);
+// //     pinMode(BTN_PIN, INPUT_PULLUP);
+// //     Serial.println(F("Simulacija sakas"));
+// // }
+
+// // void loop() {
+// //     bool pressed = (digitalRead(BTN_PIN) == LOW);
+// //     digitalWrite(LED_PIN, pressed ? HIGH : LOW);
+
+// //     static uint32_t last = 0;
+// //     if (millis() - last >= 500) {
+// //         last = millis();
+// //         Serial.print(F("Poga: "));
+// //         Serial.println(pressed ? "nospiesta" : "brīva");
+// //     }
+// // }

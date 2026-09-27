@@ -1,0 +1,36 @@
+{
+  "folders": [{ "path": "." }],
+  "settings": {
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.arguments": ["--background-index"]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build-uno",
+        "type": "shell",
+        "command": "pio run",
+        "options": { "cwd": "${workspaceFolder}" },
+        "problemMatcher": "$gcc"
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Wokwi GDB",
+        "type": "gdb",
+        "request": "attach",
+        "executable": "${workspaceFolder}/.pio/build/uno/firmware.elf",
+        "target": "localhost:3333",
+        "remote": true,
+        "cwd": "${workspaceFolder}",
+        "gdbpath": "/usr/bin/avr-gdb",
+        "valuesFormatting": "parseText",
+        "preLaunchTask": "build-uno"
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+//šis atšķirās no tāa kas tinkercad, tinkercad ir labāks/jaunāks
+
+#include "HardwareSerial.h"
+#include "Stream.h"
+#include "pins_arduino.h"
+#include <Arduino.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <sys/types.h>
+
+const static int c0Resistance = 104;
+const static int c12Rresistance = 127;
+// const static int maxResistance = 1023;
+// const static int minResistance = 0;
+const static int soilMinResistance = 0;
+const static int soilMaxResistance = 876;
+constexpr static double soil20PercentResistance = (double)soilMaxResistance*0.2;
+
+static bool isWattering;
+static unsigned long waterEndMills;
+
+unsigned long calculateWateringLenght()
+{
+    unsigned long waterLen = 10000;
+
+    if(analogRead(A1) <= c0Resistance)
+    {
+        return 0;
+    }
+    else if(analogRead(A1) < c12Rresistance)
+    {
+        return waterLen/2;
+    }
+    else 
+    {
+        return waterLen;
+    }
+}
+
+void water()
+{
+    waterEndMills = millis() + calculateWateringLenght();
+    analogWrite(analogRead(A4), 255);
+    isWattering = true;
+}
+
+void setup()
+{
+    Serial.begin(9600);
+    //   pinMode(PC0, OUTPUT);
+    //   pinMode(PC1, OUTPUT);
+    //   pinMode(PC2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    pinMode(A4, OUTPUT);
+    //   analogWrite(A3, 255);
+    //   analogWrite(A4, 255);
+
+    Serial.println("Pass L for light");
+}
+
+void loop()
+{
+    analogWrite(A4, 0);
+    while(Serial.available())
+    {
+        if(Serial.read() == (int)'L')
+        {
+            if(digitalRead(A3) == true)
+            {
+                analogWrite(A3, 0);
+            }
+            else 
+            {
+                analogWrite(A3, 255);
+            }
+        }
+    }
+
+    if(isWattering)
+    {
+        isWattering = waterEndMills >= millis();
+        analogWrite(A4, 255);
+    }
+    else if(analogRead(A2) <= soil20PercentResistance) 
+    {
+        water();
+    }
+
+
+  Serial.println(analogRead(A0));
+  Serial.println(analogRead(A1));
+  Serial.println(analogRead(A2));
+  Serial.println();
+//   delay(100); // Wait for 1000 millisecond(s)
+}

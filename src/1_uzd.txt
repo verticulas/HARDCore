@@ -1,0 +1,84 @@
+#include <Arduino.h>
+#include <limits.h>
+
+static int maxNum = INT_MIN;
+
+class LightPin
+{
+    int num;
+    uint8_t pin;
+public:
+    LightPin(int num, uint8_t pin)
+    {
+        this->num = num;
+        this->pin = pin;
+        maxNum = this->num >= maxNum ? this->num : maxNum;
+    }
+    
+    void conditionalLight()
+    {
+        pinMode(this->pin, OUTPUT);
+        if(this->num >= maxNum)
+        {
+            digitalWrite(this->pin, HIGH);
+            Serial.print(this->pin);
+            Serial.print(" ");
+        }
+        else 
+        {
+            digitalWrite(this->pin, LOW);
+        }
+    }
+};
+
+
+void setup()
+{
+    Serial.begin(9600);
+    int nums[] = {7,5,6};
+    LightPin a(nums[0], 13);
+    LightPin b(nums[1], 12);
+    LightPin c(nums[2], 11);
+
+    Serial.print("a = ");
+    Serial.print(nums[0]);
+    Serial.print(", b = ");
+    Serial.print(nums[1]);
+    Serial.print(", c = ");
+    Serial.println(nums[2]);
+
+    Serial.print("Lielaka vertiba: ");
+    Serial.println(maxNum);
+
+    Serial.print("Iedegas pin: ");
+
+    a.conditionalLight();
+    b.conditionalLight();
+    c.conditionalLight();
+}
+
+void loop() {}
+
+
+// constexpr uint8_t LED_PIN = 9;
+// constexpr uint8_t BTN_PIN = 2;
+
+// void setup() 
+// {
+//     Serial.begin(115200);
+//     pinMode(LED_PIN, OUTPUT);
+//     pinMode(BTN_PIN, INPUT_PULLUP);
+//     Serial.println(F("Simulacija sakas"));
+// }
+
+// void loop() {
+//     bool pressed = (digitalRead(BTN_PIN) == LOW);
+//     digitalWrite(LED_PIN, pressed ? HIGH : LOW);
+
+//     static uint32_t last = 0;
+//     if (millis() - last >= 500) {
+//         last = millis();
+//         Serial.print(F("Poga: "));
+//         Serial.println(pressed ? "nospiesta" : "brīva");
+//     }
+// }
