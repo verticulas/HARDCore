@@ -156,9 +156,9 @@
         "output": ".pio/build/uno/lib316/LiquidCrystal/LiquidCrystal.cpp.o"
     },
     {
-        "command": "/home/walt/.platformio/packages/toolchain-atmelavr/bin/avr-gcc -o .pio/build/uno/src/main.c.o -c -std=gnu11 -fno-fat-lto-objects -mmcu=atmega328p -Wall -ffunction-sections -fdata-sections -flto -Og -g2 -ggdb2 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -DPLATFORMIO=60200 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -D__PLATFORMIO_BUILD_DEBUG__ -Iinclude -Isrc -I.pio/libdeps/uno/LiquidCrystal/src -I/home/walt/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/walt/.platformio/packages/framework-arduino-avr/variants/standard src/main.c",
+        "command": "/home/walt/.platformio/packages/toolchain-atmelavr/bin/avr-g++ -o .pio/build/uno/src/main.cpp.o -c -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -mmcu=atmega328p -Wall -ffunction-sections -fdata-sections -flto -Og -g2 -ggdb2 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -DPLATFORMIO=60200 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -D__PLATFORMIO_BUILD_DEBUG__ -Iinclude -Isrc -I.pio/libdeps/uno/LiquidCrystal/src -I/home/walt/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/walt/.platformio/packages/framework-arduino-avr/variants/standard src/main.cpp",
         "directory": "/home/walt/Documents/PlatformIO/Projects/HARDCore",
-        "file": "src/main.c",
-        "output": ".pio/build/uno/src/main.c.o"
+        "file": "src/main.cpp",
+        "output": ".pio/build/uno/src/main.cpp.o"
     }
 ]

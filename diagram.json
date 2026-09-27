@@ -3,30 +3,204 @@
   "author": "",
   "editor": "wokwi",
   "parts": [
-    { "type": "wokwi-arduino-uno", "id": "uno", "top": 220, "left": 0, "attrs": {} },
-    { "type": "wokwi-lcd1602", "id": "lcd1", "top": 0, "left": 20, "attrs": {} },
-    { "type": "wokwi-potentiometer", "id": "pot1", "top": 10, "left": 300, "attrs": {} },
-    { "type": "wokwi-resistor", "id": "r1", "top": 120, "left": 300, "rotate": 90, "attrs": { "value": "220" } }
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 220,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": 0,
+      "left": 20,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 79,
+      "left": 350,
+      "attrs": {},
+      "rotate": 90
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 134.35,
+      "left": 245,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": 160,
+      "left": 240,
+      "attrs": {
+        "color": "green"
+      }
+    }
   ],
   "connections": [
-    [ "lcd1:VSS", "uno:GND.1", "black", [] ],
-    [ "lcd1:VDD", "uno:5V", "red", [] ],
-    [ "lcd1:RW", "lcd1:VSS", "black", [] ],
-    [ "lcd1:K", "lcd1:VSS", "black", [] ],
-
-    [ "pot1:GND", "lcd1:VSS", "black", [] ],
-    [ "pot1:VCC", "lcd1:VDD", "red", [] ],
-    [ "pot1:SIG", "lcd1:V0", "orange", [] ],
-
-    [ "lcd1:A", "r1:1", "red", [] ],
-    [ "r1:2", "lcd1:VDD", "red", [] ],
-
-    [ "lcd1:RS", "uno:12", "blue", [] ],
-    [ "lcd1:E", "uno:11", "purple", [] ],
-    [ "lcd1:D4", "uno:5", "green", [] ],
-    [ "lcd1:D5", "uno:4", "green", [] ],
-    [ "lcd1:D6", "uno:3", "green", [] ],
-    [ "lcd1:D7", "uno:2", "green", [] ]
+    [
+      "lcd1:RS",
+      "uno:12",
+      "blue",
+      [
+        "v64",
+        "h54"
+      ]
+    ],
+    [
+      "lcd1:E",
+      "uno:11",
+      "purple",
+      [
+        "v54",
+        "h44"
+      ]
+    ],
+    [
+      "lcd1:D4",
+      "uno:7",
+      "green",
+      [
+        "v44",
+        "h41"
+      ]
+    ],
+    [
+      "lcd1:D5",
+      "uno:6",
+      "green",
+      [
+        "v34",
+        "h41"
+      ]
+    ],
+    [
+      "lcd1:D6",
+      "uno:5",
+      "green",
+      [
+        "v24",
+        "h41"
+      ]
+    ],
+    [
+      "lcd1:D7",
+      "uno:4",
+      "green",
+      [
+        "v14",
+        "h41"
+      ]
+    ],
+    [
+      "lcd1:VSS",
+      "uno:GND.1",
+      "black",
+      [
+        "v74",
+        "h63.5"
+      ]
+    ],
+    [
+      "lcd1:RW",
+      "lcd1:VSS",
+      "black",
+      [
+        "v7",
+        "h-38.5"
+      ]
+    ],
+    [
+      "lcd1:VDD",
+      "uno:5V",
+      "red",
+      [
+        "v-13",
+        "h-91.5",
+        "v317",
+        "h190"
+      ]
+    ],
+    [
+      "lcd1:V0",
+      "pot1:SIG",
+      "orange",
+      [
+        "v-13"
+      ]
+    ],
+    [
+      "lcd1:A",
+      "pot1:VCC",
+      "red",
+      [
+        "v-3"
+      ]
+    ],
+    [
+      "lcd1:K",
+      "r1:1",
+      "black",
+      [
+        "v9"
+      ]
+    ],
+    [
+      "r1:2",
+      "uno:GND.3",
+      "black",
+      [
+        "h10",
+        "v300",
+        "h-134.8"
+      ]
+    ],
+    [
+      "pot1:VCC",
+      "uno:5V",
+      "red",
+      [
+        "h-27.1",
+        "v322",
+        "h-170"
+      ]
+    ],
+    [
+      "pot1:GND",
+      "uno:GND.3",
+      "black",
+      [
+        "h-10",
+        "v-50",
+        "h100",
+        "v402",
+        "h-268.1"
+      ]
+    ],
+    [
+      "btn1:1.l",
+      "uno:2",
+      "gold",
+      [
+        "h-3.5"
+      ]
+    ],
+    [
+      "btn1:2.r",
+      "r1:2",
+      "black",
+      [
+        "h6.8",
+        "v-52"
+      ]
+    ]
   ],
   "dependencies": {}
 }
