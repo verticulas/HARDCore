@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <LiquidCrystal.h>
+// #include <avr/io.h>
 // #include <cstdint>
 
 static constexpr byte heart[8] = 
@@ -30,7 +31,7 @@ struct Entity
 
 struct GoodEntity
 {
-  
+  Entity entity;
 };
 
 static constexpr uint16_t tickInterval = 100;
@@ -40,13 +41,16 @@ static constexpr uint8_t entityMaxBuffer = sizeof(Entity) * 7 + sizeof(GoodEntit
 
 static uint64_t lastTick = 0;
 
-void jump(Entity *entity)
+void jump(GoodEntity *entity)
 {
 
 }
 
 //šo drīzāk var kā event kad visus 
-void move() {}
+void move(Entity *entity, bool isMovingLeft = 1) 
+{
+  
+}
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
