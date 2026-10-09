@@ -6,7 +6,7 @@
 // Nekad neraida. LCD: I2C modulis (4 vadi).
 
 const int MODE     = 0;      // 0 darbs, 1 kalibrēšana, 2 diagnostika (115200 bodi)
-const int MY_TH    = 33;     // slieksnis pēc kalibrēšanas
+const int MY_TH    = 33;     // minimālais slieksnis; ar AUTO_TH RX pats ceļ virs fona
 const int WORD_MAX = 12;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);   // dažiem moduļiem 0x3F
@@ -98,12 +98,13 @@ void loop() {
     }
     return;
   }
-  // katrs kadrs datoram (tools/txmon.py): @B,baits_hex,paritāte(1 ok/0 bojāts),starts,fons,slieksnis
+  // katrs kadrs datoram (tools/txmon.py): @B,baits_hex,paritāte(1 ok/0 bojāts),starts,fons,bitu slieksnis,starta slieksnis
   Serial.print(F("@B,")); if (f < 16) Serial.print('0'); Serial.print(f, HEX);
   Serial.print(','); Serial.print(r);
   Serial.print(','); Serial.print(saite::lastRef);      // starta bita līmenis
   Serial.print(','); Serial.print(saite::floorLvl);     // fons
-  Serial.print(','); Serial.println(saite::lastBitTH);  // izmantotais slieksnis
+  Serial.print(','); Serial.print(saite::lastBitTH);    // bitu slieksnis
+  Serial.print(','); Serial.println(saite::lastStartTH); // starta slieksnis
   if (r == 0) return;                          // paritāte nesakrīt: izmet
   lastFrame = millis();
 

@@ -13,14 +13,26 @@ const int PIN_OUT = 8;
 const int PIN_IN  = A0;
 const int BIT     = 50;     // ms, abām platēm jābūt vienādam
 const int FREQ    = 3170;   // Hz
+const int GAP     = 3 * BIT;  // klusums starp kadriem (TX)
+const int QUIET   = 2 * BIT + 20;  // RX gaida startu tikai pēc tik ilga klusuma
 
 const byte ACK = 0x06;
 const byte EOT = 0x04;
 
 static int TH = 33;         // slieksnis, katrai platei savs (iestata skicē)
 static bool RELATIVE = true; // bitu slieksni rēķina no starta bita un fona
+static bool AUTO_TH = true;  // starta slieksni pielāgo fonam darbības laikā
 static int floorLvl = 0;    // fona līmenis, mērīts klusumā
-static int lastRef = 0, lastBitTH = 0;   // diagnostikai
+static long floor16 = 0, dev16 = 0;      // fons un tā svārstības ×16
+static unsigned long lastLoud = 0;       // pēdējais brīdis, kad bija tonis
+static int lastRef = 0, lastBitTH = 0, lastStartTH = 0;   // diagnostikai
+
+// Starta slieksnis: fons + 6 svārstības, bet ne zemāk par TH (TH = minimums)
+inline int startTH() {
+  if (!AUTO_TH) return TH;
+  int t = (int)((floor16 + 6 * dev16) / 16) + 3;
+  return t > TH ? t : TH;
+}
 
 inline void begin() {
   ADCSRA = (ADCSRA & 0xF8) | 0x04;   // ātrais ADC, ķer īsos impulsus
@@ -102,18 +114,32 @@ inline void sendByte(byte b) {
   if (oddOnes(b)) tone(PIN_OUT, FREQ); else noTone(PIN_OUT);    // pāra paritāte
   delay(BIT);
   listen();
-  delay(2 * BIT);                                               // klusums, otrs pārslēdzas
+  delay(GAP);                                                   // klusums: kadra robeža
 }
 
 // 1 = baits saņemts, 0 = kadrs bojāts (paritāte), -1 = nekas laikā
 inline int receiveByte(byte &out, unsigned long timeoutMs) {
   listen();
   unsigned long start = millis();
-  int v;
-  while ((v = measure(5)) < TH) {
-    floorLvl = (floorLvl * 7 + v) / 8;          // klusuma vidējais
+  int v, sth;
+  // Starts skaitās tikai tad, ja pirms tā bija vismaz QUIET ms klusuma.
+  // Tā RX neiekrīt kadra vidū un nepaliek "iesprūdis" nobīdītā ritmā.
+  while (true) {
+    v = measure(5);
+    sth = startTH();
+    if (v >= sth) {
+      if (millis() - lastLoud >= (unsigned long)QUIET) break;
+      lastLoud = millis();                      // tonis, bet bez klusuma pirms tā
+    } else {
+      // klusumā mācās fonu: vidējais un vidējā novirze (lēni, ~16 mērījumi)
+      long d = (long)v * 16 - floor16;
+      floor16 += d / 16;
+      dev16 += ((d < 0 ? -d : d) - dev16) / 16;
+      floorLvl = (int)(floor16 / 16);
+    }
     if (millis() - start > timeoutMs) return -1;
   }
+  lastStartTH = sth;
   unsigned long t0 = millis();
   // Relatīvais slieksnis: vidus starp starta bita līmeni un fonu.
   // Ja signāls vājāks (tālāk), slieksnis nolaižas līdzi.
@@ -132,7 +158,7 @@ inline int receiveByte(byte &out, unsigned long timeoutMs) {
   }
   while (millis() - t0 < (unsigned long)(BIT * 9 + 10)) ;
   bool p = measure(30) > bitTH;
-  while (millis() - t0 < (unsigned long)(BIT * 11)) ;
+  lastLoud = millis();                          // kadra beigas; klusums skaitās no šejienes
   out = b;                                // arī bojātu kadru atdod, diagnostikai
   if (p != oddOnes(b)) return 0;
   return 1;
