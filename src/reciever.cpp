@@ -5,7 +5,7 @@
 // RX, vienvirziena: klausās, atmet atkārtojumus, pārbauda kontrolsummu.
 // Nekad neraida. LCD: I2C modulis (4 vadi).
 
-const int MODE     = 0;      // 0 darbs, 1 kalibrēšana, 2 diagnostika (115200 bodi)
+const int MODE     = 0;      // 0 darbs, 1 kalibrēšana, 2 diagnostika, 3 neapstrādāti dati (2 un 3: 115200 bodi)
 const int MY_TH    = 33;     // minimālais slieksnis; ar AUTO_TH RX pats ceļ virs fona
 const int WORD_MAX = 12;
 
@@ -54,6 +54,72 @@ void diagnose() {
   lcd.setCursor(0, 1); lcd.print("Kadri: "); lcd.print(diagFrames);
 }
 
+// ---- MODE 3: neapstrādāti dati vizualizācijai (tools/viz.py), 115200 bodi.
+// Pēc starta: 480 ADC paraugi (6,2 ms, 24 uz tona periodu), tad 98 bloki
+// pa 5 ms ar I un Q summām līdz kadra beigām. Tieši tas, ko dara measure().
+const int RAW_N = 480, IQ_N = 98;
+uint8_t rawV[RAW_N];
+int16_t iqI[IQ_N], iqQ[IQ_N];
+const int8_t S24[24] = {0, 16, 32, 45, 55, 61, 63, 61, 55, 45, 32, 16,
+                        0, -16, -32, -45, -55, -61, -63, -61, -55, -45, -32, -16};
+unsigned long rawFrames = 0;
+
+void rawCapture() {
+  saite::listen();
+  int v = saite::measure(5);
+  int sth = saite::startTH();
+  if (v < sth) {                                   // klusums: mācās fonu
+    long d = (long)v * 16 - saite::floor16;
+    saite::floor16 += d / 16;
+    saite::dev16 += ((d < 0 ? -d : d) - saite::dev16) / 16;
+    saite::floorLvl = (int)(saite::floor16 / 16);
+    return;
+  }
+  if (millis() - saite::lastLoud < (unsigned long)saite::QUIET) { saite::lastLoud = millis(); return; }
+
+  analogRead(saite::PIN_IN);
+  uint8_t sa = ADCSRA, sb = ADCSRB;
+  ADCSRB = 0;
+  ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADIF) | 0x04;
+  ADCSRA |= _BV(ADSC);
+  for (int n = 0; n < RAW_N; n++) {
+    while (!(ADCSRA & _BV(ADIF))) ;
+    ADCSRA |= _BV(ADIF);
+    int x = ADC;
+    rawV[n] = x > 255 ? 255 : x;
+  }
+  uint8_t ph = 0, pq = 6;                          // 480 = 20 periodi, fāze turpinās
+  for (int k = 0; k < IQ_N; k++) {
+    long I = 0, Q = 0;
+    for (int n = 0; n < 24 * 16; n++) {
+      while (!(ADCSRA & _BV(ADIF))) ;
+      ADCSRA |= _BV(ADIF);
+      int x = ADC;
+      if (x > 511) x = 511;
+      I += (int)(x * S24[ph]);
+      Q += (int)(x * S24[pq]);
+      if (++ph == 24) ph = 0;
+      if (++pq == 24) pq = 0;
+    }
+    iqI[k] = I / 512; iqQ[k] = Q / 512;
+  }
+  ADCSRA = sa; ADCSRB = sb;
+  while (ADCSRA & _BV(ADSC)) ;
+
+  Serial.print(F("@LV,")); Serial.print(v); Serial.print(',');
+  Serial.print(saite::floorLvl); Serial.print(','); Serial.println(sth);
+  Serial.print(F("@RAW,"));
+  for (int n = 0; n < RAW_N; n++) { Serial.print(rawV[n]); Serial.print(n < RAW_N - 1 ? ' ' : '\n'); }
+  Serial.print(F("@IQ,"));
+  for (int k = 0; k < IQ_N; k++) {
+    Serial.print(iqI[k]); Serial.print(' '); Serial.print(iqQ[k]);
+    Serial.print(k < IQ_N - 1 ? ' ' : '\n');
+  }
+  saite::lastLoud = millis();
+  rawFrames++;
+  lcd.setCursor(0, 1); lcd.print("Kadri: "); lcd.print(rawFrames);
+}
+
 void resetWord() { n = 0; sum = 0; gotEot = false; lastSeq = 1; }
 
 void calibrate() {
@@ -71,12 +137,12 @@ void calibrate() {
 }
 
 void setup() {
-  Serial.begin(MODE == 2 ? 115200 : 9600);
+  Serial.begin(MODE >= 2 ? 115200 : 9600);
   saite::begin();
   saite::TH = MY_TH;
   lcd.init();
   lcd.backlight();
-  at(0, 0, MODE == 1 ? "Kalibresana" : MODE == 2 ? "Diagnostika" : "RX klausas");
+  at(0, 0, MODE == 1 ? "Kalibresana" : MODE == 2 ? "Diagnostika" : MODE == 3 ? "Raw dati" : "RX klausas");
   delay(1000);
   if (MODE == 1) lcd.clear();
   if (MODE == 2) { Serial.print(F("@R,")); Serial.print(saite::BIT); Serial.print(',');
@@ -86,6 +152,7 @@ void setup() {
 void loop() {
   if (MODE == 1) { calibrate(); return; }
   if (MODE == 2) { diagnose(); return; }
+  if (MODE == 3) { rawCapture(); return; }
 
   byte f;
   int r = saite::receiveByte(f, 1000);
@@ -105,6 +172,10 @@ void loop() {
   Serial.print(','); Serial.print(saite::floorLvl);     // fons
   Serial.print(','); Serial.print(saite::lastBitTH);    // bitu slieksnis
   Serial.print(','); Serial.println(saite::lastStartTH); // starta slieksnis
+  // Līmeņi uz LCD (2. rinda, pa kreisi), lai tos redz arī bez datora: S starts, F fons
+  char lv[10];
+  snprintf(lv, sizeof lv, "S%-3dF%-3d", saite::lastRef, saite::floorLvl);
+  lcd.setCursor(0, 1); lcd.print(lv);
   if (r == 0) return;                          // paritāte nesakrīt: izmet
   lastFrame = millis();
 
