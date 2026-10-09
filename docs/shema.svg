@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="580" viewBox="0 0 760 580" font-family="DejaVu Sans, Arial, sans-serif">
+  <title>Vienvirziena saite TX → RX ar LCD</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1L9 5L1 9" fill="none" stroke="#5F5E5A" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="760" height="580" fill="#FFFFFF"/>
+
+  <g fill="#2C2C2A" font-size="13">
+    <text x="380" y="26" font-size="18" text-anchor="middle">Vienvirziena saite: TX → RX (3205 Hz)</text>
+
+    <rect x="50" y="44" width="170" height="46" rx="6" fill="#F1EFE8" stroke="#888780"/>
+    <text x="135" y="62" text-anchor="middle" font-weight="bold">Barošana</text>
+    <text x="135" y="80" text-anchor="middle" font-size="12">9 V / 6×AA uz VIN</text>
+    <rect x="540" y="44" width="170" height="46" rx="6" fill="#F1EFE8" stroke="#888780"/>
+    <text x="625" y="62" text-anchor="middle" font-weight="bold">Barošana</text>
+    <text x="625" y="80" text-anchor="middle" font-size="12">9 V / 6×AA uz VIN</text>
+
+    <!-- TX Uno -->
+    <rect x="50" y="110" width="170" height="280" rx="8" fill="#F1EFE8" stroke="#888780"/>
+    <text x="115" y="235" text-anchor="middle" font-size="15" font-weight="bold">Uno TX</text>
+    <text x="115" y="254" text-anchor="middle" font-size="11" fill="#5F5E5A">tikai raida</text>
+    <text x="210" y="174" text-anchor="end">D8</text>
+    <text x="210" y="304" text-anchor="end">GND</text>
+    <text x="210" y="344" text-anchor="end">D2</text>
+    <g font-size="11" text-anchor="middle">
+      <text x="80" y="380">5V</text><text x="115" y="380">GND</text>
+      <text x="151" y="380" font-size="9">D12,11</text><text x="190" y="380" font-size="9">D3–5,7</text>
+    </g>
+
+    <!-- RX Uno -->
+    <rect x="540" y="110" width="170" height="280" rx="8" fill="#F1EFE8" stroke="#888780"/>
+    <text x="645" y="235" text-anchor="middle" font-size="15" font-weight="bold">Uno RX</text>
+    <text x="645" y="254" text-anchor="middle" font-size="11" fill="#5F5E5A">tikai klausās</text>
+    <text x="550" y="174">A0</text>
+    <text x="550" y="304">GND</text>
+    <g font-size="11" text-anchor="middle">
+      <text x="570" y="380">5V</text><text x="605" y="380">GND</text>
+      <text x="640" y="380">A4</text><text x="675" y="380">A5</text>
+    </g>
+  </g>
+
+  <g stroke="#444441" stroke-width="1.2" fill="none">
+    <line x1="135" y1="90" x2="135" y2="110"/>
+    <line x1="625" y1="90" x2="625" y2="110"/>
+    <!-- TX -->
+    <line x1="220" y1="170" x2="240" y2="170"/>
+    <line x1="290" y1="170" x2="360" y2="170"/>
+    <line x1="220" y1="300" x2="340" y2="300"/>
+    <line x1="220" y1="340" x2="260" y2="340"/>
+    <path d="M320 340 L340 340 L340 300"/>
+    <!-- RX -->
+    <line x1="400" y1="170" x2="450" y2="170"/>
+    <line x1="500" y1="170" x2="540" y2="170"/>
+    <line x1="515" y1="170" x2="515" y2="200"/>
+    <path d="M515 260 L515 300 L540 300"/>
+    <!-- LCD vadi -->
+    <line x1="80" y1="390" x2="80" y2="440"/><line x1="115" y1="390" x2="115" y2="440"/>
+    <line x1="150" y1="390" x2="150" y2="440"/><line x1="185" y1="390" x2="185" y2="440"/>
+    <line x1="570" y1="390" x2="570" y2="440"/><line x1="605" y1="390" x2="605" y2="440"/>
+    <line x1="640" y1="390" x2="640" y2="440"/><line x1="675" y1="390" x2="675" y2="440"/>
+  </g>
+  <circle cx="515" cy="170" r="3" fill="#444441"/>
+
+  <g fill="#FFFFFF" stroke="#444441" stroke-width="1.2">
+    <rect x="240" y="162" width="50" height="16" rx="2"/>
+    <rect x="260" y="328" width="60" height="24" rx="4"/>
+    <rect x="450" y="162" width="50" height="16" rx="2"/>
+    <rect x="507" y="200" width="16" height="60" rx="2"/>
+  </g>
+  <g fill="#2C2C2A" font-size="12">
+    <text x="265" y="154" text-anchor="middle">4,7 kΩ</text>
+    <text x="290" y="344" text-anchor="middle">Poga</text>
+    <text x="475" y="154" text-anchor="middle">4,7 kΩ</text>
+    <text x="498" y="227" text-anchor="end">2× 1 MΩ</text>
+    <text x="498" y="242" text-anchor="end" fill="#5F5E5A">pull-down</text>
+  </g>
+
+  <!-- Antēnas -->
+  <text x="380" y="100" font-size="12" fill="#993C1D" text-anchor="middle">raida →</text>
+  <g stroke="#D85A30" stroke-width="2" fill="none" stroke-linecap="round">
+    <line x1="360" y1="115" x2="360" y2="255"/>
+  </g>
+  <g stroke="#D85A30" stroke-width="2" fill="none" stroke-linecap="round">
+    <line x1="400" y1="115" x2="400" y2="255"/>
+  </g>
+  <line x1="366" y1="145" x2="394" y2="145" stroke="#D85A30" stroke-width="1" stroke-dasharray="2 3"/>
+  <line x1="366" y1="245" x2="394" y2="245" stroke="#D85A30" stroke-width="1" stroke-dasharray="2 3"/>
+  <line x1="380" y1="160" x2="380" y2="232" stroke="#888780" stroke-width="1" stroke-dasharray="3 3" marker-start="url(#a)" marker-end="url(#a)"/>
+  <rect x="372" y="200" width="16" height="22" fill="#FFFFFF"/>
+  <text x="380" y="216" font-size="14" font-weight="bold" fill="#993C1D" text-anchor="middle">L</text>
+  <line x1="363" y1="270" x2="397" y2="270" stroke="#888780" stroke-width="1" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text x="380" y="290" font-size="14" font-weight="bold" fill="#993C1D" text-anchor="middle">d</text>
+
+  <!-- LCD -->
+  <g font-size="11">
+    <rect x="50" y="440" width="170" height="64" rx="8" fill="#E1F5EE" stroke="#0F6E56"/>
+    <g fill="#0F6E56" text-anchor="middle">
+      <text x="80" y="457">VDD</text><text x="115" y="457">VSS</text>
+      <text x="150" y="457">RS E</text><text x="188" y="457">D4–D7</text>
+    </g>
+    <text x="135" y="482" text-anchor="middle" font-size="13" font-weight="bold" fill="#085041">LCD 16×2, 16 pin</text>
+    <text x="135" y="497" text-anchor="middle" fill="#0F6E56">D5 D4 D3 D7, V0 ← B5K</text>
+    <rect x="540" y="440" width="170" height="64" rx="8" fill="#E1F5EE" stroke="#0F6E56"/>
+    <g fill="#0F6E56" text-anchor="middle">
+      <text x="570" y="457">VCC</text><text x="605" y="457">GND</text>
+      <text x="640" y="457">SDA</text><text x="675" y="457">SCL</text>
+    </g>
+    <text x="625" y="482" text-anchor="middle" font-size="13" font-weight="bold" fill="#085041">LCD 16×2 I2C</text>
+    <text x="625" y="497" text-anchor="middle" fill="#0F6E56">rāda saņemto + OK</text>
+  </g>
+
+  <!-- Antēnu parametri -->
+  <rect x="250" y="420" width="260" height="100" rx="8" fill="#FAECE7" stroke="#993C1D"/>
+  <g font-size="12" fill="#712B13">
+    <text x="380" y="440" text-anchor="middle" font-size="13" font-weight="bold">Elektrodi (stieples)</text>
+    <text x="265" y="459"><tspan font-weight="bold">L</tspan> garums: 20–50 cm, abām vienāds</text>
+    <text x="265" y="476"><tspan font-weight="bold">d</tspan> attālums: 1–15 cm, paralēli</text>
+    <text x="265" y="493">brīvais gals var palikt izolēts</text>
+    <text x="265" y="510">nav detaļas: C ≈ 0,1–1 pF gaisā</text>
+  </g>
+
+  <text x="380" y="546" font-size="12" fill="#5F5E5A" text-anchor="middle">Bez datora un bez atpakaļceļa. Katrs kadrs 3 reizes, beigās kontrolsumma.</text>
+  <text x="380" y="564" font-size="12" fill="#5F5E5A" text-anchor="middle">LCD vadus velc prom no elektrodiem. Pilns saslēgums: saslegums.svg</text>
+</svg>
