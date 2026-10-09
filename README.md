@@ -1,4 +1,4 @@
-Bezvadu saite starp diviem Arduino ar divām stieplēm
+## Bezvadu saite starp diviem Arduino ar divām stieplēm
 
 Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
 Datus nes elektriskais lauks starp divām paralēlām stieplēm. Multimetrs omu režīmā starp platēm rāda bezgalību.
