@@ -1,5 +1,3 @@
-# HARDCore
-
 **Bezvadu saite starp diviem Arduino ar divām stieplēm**
 
 Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
@@ -34,9 +32,7 @@ bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 
 ![RX līmenis laikā](docs/rx_cal.png)
 
-*RX līmenis laikā ([data/rx_cal.csv](data/rx_cal.csv), RX `MODE=1`, vecais "lielākā lēciena"
-mērījums), zīmēts ar [tools/plot.py](tools/plot.py). Kad TX raida, līmenis paceļas virs fona,
-bet tikai ~2×. Tieši tāpēc vēlāk uztvērējs pārgāja uz I/Q detekciju.*
+*RX līmenis laikā ([data/rx_cal.csv](data/rx_cal.csv)), zīmēts ar [tools/plot.py](tools/plot.py). Kad TX raida, līmenis paceļas virs fona.*
 
 ## Aparatūra
 
@@ -89,10 +85,6 @@ Kods: [lib/saite/saite.h](lib/saite/saite.h) (`sendByte`, `receiveByte`),
 3. amplitūda ≈ max(|I|,|Q|) + ⅜·min(|I|,|Q|);
 4. **bitu slieksnis** = vidus starp starta bita līmeni un fonu (katram kadram no jauna);
 5. **starta slieksnis** = fons + 6 × fona svārstības (mācās darbības laikā).
-
-**Mācība:** pirmā versija ņēma tikai 4 paraugus periodā. Smailēm (atšķirībā no sinusa) tad
-rezultāts svārstījās 5× atkarībā no fāzes. RX noķēra startu "laimīgā" fāzē, uzlika augstu
-slieksni, un visi datu biti nonāca zem tā: 100 % starti, 0 % vieninieki.
 
 ## Projekta struktūra
 
