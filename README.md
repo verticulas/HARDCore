@@ -1,16 +1,36 @@
-## Bezvadu saite starp diviem Arduino ar divām stieplēm
+# HARDCore: bezvadu saite starp diviem Arduino ar divām stieplēm
 
 Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
-Datus nes elektriskais lauks starp divām paralēlām stieplēm. Multimetrs omu režīmā starp platēm rāda bezgalību.
+Datus nes elektriskais lauks starp divām paralēlām stieplēm (kapacitīvā tuvlauka saite,
+~0,5 pF). Multimetrs omu režīmā starp platēm rāda bezgalību.
 
 <!-- Video: ievelc šeit GitHub tīmekļa redaktorā (mp4, < 10 MB) -->
+<!-- Īss klips: poga → TX LCD → RX LCD "OK", multimetrs rāda ∞ -->
 
 | | |
 |---|---|
 | Nesējfrekvence | 3205 Hz (`tone(3170)` uz Timer2 reāli dod 3205,13 Hz) |
 | Ātrums | 50 ms/bits, ~11,7 s uz 4 burtu vārdu (ar 3 atkārtojumiem) |
-| Attālums | ~6,5 cm starp stieplēm, 25 cm paralēlais posms |
+| Attālums | ~6,5 cm starp stieplēm, 20–50 cm paralēlais posms |
 | Uztvērējs | sinhronā I/Q detekcija, 24 paraugi uz tona periodu |
+
+---
+
+## Saturs
+
+1. [Kā tas strādā](#kā-tas-strādā)
+2. [Rezultāti](#rezultāti)
+3. [Aparatūra](#aparatūra)
+4. [Protokols](#protokols)
+5. [Uztvērējs](#uztvērējs)
+6. [Projekta struktūra](#projekta-struktūra)
+7. [Palaišana](#palaišana)
+8. [Diagnostikas rīki](#diagnostikas-rīki)
+9. [Fizika un zināmās problēmas](#fizika-un-zināmās-problēmas)
+10. [Eksperimenti](#eksperimenti)
+11. [Tālāk](#tālāk)
+
+---
 
 ## Kā tas strādā
 
@@ -18,16 +38,34 @@ TX ieslēdz un izslēdz 3205 Hz toni uz D8 (ieslēgts = 1, izslēgts = 0). Caur 
 nonāk TX stieplē. RX stieple atrodas paralēli tai, un abas kopā veido niecīgu kondensatoru
 C_m. RX pusē tam pretī ir ievada kapacitāte C_in ≈ 15 pF un 2 MΩ pull-down:
 
-![Raw data](image.png)
-
-*Raw dati* no [data/rx_cal.csv](data/rx_cal.csv), vizualizēts ar [tools/plot.py](tools/plot.py)
+```
+TX D8 ─4,7k─ TX stieple ┊┊ C_m ≈ 0,5 pF ┊┊ RX stieple ─4,7k─ A0 ─┬─ 2 MΩ ─ GND
+                                                                  └─ C_in ≈ 15 pF
+```
 
 τ = R·C ≈ 30 µs ir daudz īsāks par tona periodu (312 µs), tāpēc RX redz nevis taisnstūri,
 bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 
-![Vienkāršota shēma](docs/shema.svg)
+![Principiālā shēma](docs/shema.svg)
+*Principiālā shēma: ko ar ko savieno un kur atrodas elektrodi.*
 
-*Vienkāršota shēma: ko ar ko savieno un kur atrodas elektrodi.*
+Šī **nav antena** un nav radioviļņi: viļņa garums pie 3,2 kHz ir ~95 km, un stieples ir
+miljoniem reižu īsākas. Tas ir tīrs elektriskais tuvlauks.
+
+![Apstrāde soli pa solim](docs/viz_sim.png)
+*`tools/viz.py --sim`: ADC paraugi → I/Q summēšana → I/Q plakne → bitu lēmumi.*
+
+## Rezultāti
+
+| Posms | Vārdi OK | Precīzas kopijas | 1→0 | 0→1 | signāls/fons |
+|---|---|---|---|---|---|
+| "Lielākais lēciens" (sākotnējais) | 0/10 | 10/173 | 58 % | 25 % | ~2× |
+| 4 paraugu I/Q (kļūda, sk. zemāk) | 0/10 | 0/180 | 100 % | 0 % | n/a |
+| 24 paraugu I/Q + relatīvais slieksnis | 7/10 | 154/174 | 5 % | 4 % | **9,5×** |
+| + kadru sinhronizācija | <!-- aizpildīt --> | | | | |
+
+Kļūdas noteiktas ar diviem bitiem, kuru vērtība ir zināma iepriekš: visi lielie burti
+`A`…`Z` ir `0x41`…`0x5A`, tātad **D6 vienmēr ir 1** un **D5 vienmēr ir 0**.
 
 ## Aparatūra
 
@@ -44,7 +82,7 @@ bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 | Stieple, 20–50 cm | 2 (+2 zemes pārim) | elektrodi |
 | 9 V vai 6×AA | 2 | barošana uz VIN |
 
-![Reālais saslēgums](docs/vienvirziena_realais.svg)
+![Reālais saslēgums](docs/saslegums.svg)
 *Reālais saslēgums: katrs vads tieši tā, kā tas iet uz plates un maizes dēļa. Krustojumi bez punkta nav savienoti.*
 
 **TX LCD:** RS→D12, E→D11, D4→D5, D5→D4, D6→D3, D7→D7, RW un K→GND, A caur 220 Ω→5V,
@@ -147,3 +185,39 @@ python3 tools/viz.py --sim --dist 30 --noise 4             # bez platēm
 
 `txmon.py` kopsavilkums: saņemto kopiju %, apgriezto bitu sadalījums, 1→0 pret 0→1
 (slieksnis par augstu vai par zemu), RX līmeņu mediānas un signāls/fons.
+
+## Fizika un zināmās problēmas
+
+- **Atgriezes ceļš.** Uz USB abām platēm ir kopēja zeme caur datoru, un saite izskatās
+  labāka nekā īstenībā. Uz baterijām atgriezes ceļš ir jāuzbūvē: zemes elektrodu pāris
+  vai bateriju bloki blakus.
+- **Baterijas pie svešā elektroda bojā saiti visvairāk.** Baterija ir plates zemes tīkla
+  daļa (~2 pF, vairāk nekā C_m) un ienes signālu ar pretēju fāzi. Lādētāji, LED un 50 Hz
+  lielākoties tiek izfiltrēti.
+- **Stieples attālums ietekmē maz.** Garām paralēlām stieplēm C ∝ 1/ln(d/r):
+  6,5 → 1,5 cm dod tikai ~1,4×. Daudz vairāk dod garāks paralēlais posms vai savītas stieples (~9×).
+- **RX mezgls pie 0 V.** Negatīvās smailes nogriežas, un 50 Hz brums modulē amplitūdu.
+
+## Eksperimenti
+
+| Traucējums | S | F | Saite |
+|---|---|---|---|
+| <!-- Atskaite --> | | | |
+| Telefona lādētājs | | | |
+| LED spuldze | | | |
+| 9 V baterija blakus | | | sabrūk |
+| Zemēta folija starp elektrodiem | | | |
+| Tonis 3205 Hz no telefona | | | |
+| Tonis 3405 Hz no telefona | | | |
+
+## Tālāk
+
+- [ ] zemes elektrodu pāris un tests ar abām platēm uz baterijām
+- [ ] Manchester kodējums: nav garu klusumu kadrā, lēmums bez sliekšņa
+- [ ] RX ievada nobīde uz 2,5 V (abas frontes, nekāda nogriešana)
+- [ ] bitu balsošana starp 3 kopijām
+- [ ] divvirzienu režīms ar ACK (`sendReliable` / `receiveReliable` jau ir `saite.h`)
+
+## Licence
+
+<!-- piem. MIT -->
