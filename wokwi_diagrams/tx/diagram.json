@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "author": "vienvirziena saite",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 200,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd",
+      "top": -60,
+      "left": 20,
+      "attrs": {
+        "pins": "full"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot",
+      "top": -60,
+      "left": -120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rbl",
+      "top": -110,
+      "left": 260,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn",
+      "top": 120,
+      "left": 360,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rtx",
+      "top": 150,
+      "left": 470,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "t1",
+      "top": 120,
+      "left": 470,
+      "attrs": {
+        "text": "→ TX elektrods (brīvs gals)"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "lcd:VSS",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd:VDD",
+      "uno:5V",
+      "red",
+      []
+    ],
+    [
+      "lcd:RW",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd:K",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd:A",
+      "rbl:1",
+      "red",
+      []
+    ],
+    [
+      "rbl:2",
+      "uno:5V",
+      "red",
+      []
+    ],
+    [
+      "pot:VCC",
+      "uno:5V",
+      "red",
+      []
+    ],
+    [
+      "pot:GND",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "pot:SIG",
+      "lcd:V0",
+      "gray",
+      []
+    ],
+    [
+      "lcd:RS",
+      "uno:12",
+      "orange",
+      []
+    ],
+    [
+      "lcd:E",
+      "uno:11",
+      "gold",
+      []
+    ],
+    [
+      "lcd:D4",
+      "uno:5",
+      "green",
+      []
+    ],
+    [
+      "lcd:D5",
+      "uno:4",
+      "blue",
+      []
+    ],
+    [
+      "lcd:D6",
+      "uno:3",
+      "purple",
+      []
+    ],
+    [
+      "lcd:D7",
+      "uno:7",
+      "brown",
+      []
+    ],
+    [
+      "btn:1.l",
+      "uno:2",
+      "cyan",
+      []
+    ],
+    [
+      "btn:2.l",
+      "uno:GND.2",
+      "black",
+      []
+    ],
+    [
+      "uno:8",
+      "rtx:1",
+      "orange",
+      []
+    ]
+  ],
+  "dependencies": {}
+}

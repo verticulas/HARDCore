@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+# Informatīvā: abas plates redzamas, firmware tiek ielādēts tikai vienā
+firmware = '../../.pio/build/tx/firmware.hex'
+elf = '../../.pio/build/tx/firmware.elf'

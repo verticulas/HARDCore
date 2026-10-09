@@ -1,0 +1,289 @@
+{
+  "version": 1,
+  "author": "vienvirziena saite",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "tx_uno",
+      "top": 200,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "tx_lcd",
+      "top": -60,
+      "left": 20,
+      "attrs": {
+        "pins": "full"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "tx_pot",
+      "top": -60,
+      "left": -120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "tx_rbl",
+      "top": -110,
+      "left": 260,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "tx_btn",
+      "top": 120,
+      "left": 360,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "tx_rtx",
+      "top": 150,
+      "left": 470,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "tx_t1",
+      "top": 120,
+      "left": 470,
+      "attrs": {
+        "text": "→ TX elektrods (brīvs gals)"
+      }
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "rx_uno",
+      "top": 200,
+      "left": 900,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "rx_lcd",
+      "top": -40,
+      "left": 920,
+      "attrs": {
+        "pins": "i2c"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rx_rrx",
+      "top": 150,
+      "left": 700,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rx_rpd1",
+      "top": 480,
+      "left": 780,
+      "rotate": 90,
+      "attrs": {
+        "value": "1000000"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rx_rpd2",
+      "top": 560,
+      "left": 780,
+      "rotate": 90,
+      "attrs": {
+        "value": "1000000"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "rx_t1",
+      "top": 120,
+      "left": 640,
+      "attrs": {
+        "text": "RX elektrods (brīvs gals) →"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "note",
+      "top": -160,
+      "left": 400,
+      "attrs": {
+        "text": "Tikai vizualizācija: Wokwi darbina vienu plati, elektrodi netiek simulēti"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "tx_lcd:VSS",
+      "tx_uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "tx_lcd:VDD",
+      "tx_uno:5V",
+      "red",
+      []
+    ],
+    [
+      "tx_lcd:RW",
+      "tx_uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "tx_lcd:K",
+      "tx_uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "tx_lcd:A",
+      "tx_rbl:1",
+      "red",
+      []
+    ],
+    [
+      "tx_rbl:2",
+      "tx_uno:5V",
+      "red",
+      []
+    ],
+    [
+      "tx_pot:VCC",
+      "tx_uno:5V",
+      "red",
+      []
+    ],
+    [
+      "tx_pot:GND",
+      "tx_uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "tx_pot:SIG",
+      "tx_lcd:V0",
+      "gray",
+      []
+    ],
+    [
+      "tx_lcd:RS",
+      "tx_uno:12",
+      "orange",
+      []
+    ],
+    [
+      "tx_lcd:E",
+      "tx_uno:11",
+      "gold",
+      []
+    ],
+    [
+      "tx_lcd:D4",
+      "tx_uno:5",
+      "green",
+      []
+    ],
+    [
+      "tx_lcd:D5",
+      "tx_uno:4",
+      "blue",
+      []
+    ],
+    [
+      "tx_lcd:D6",
+      "tx_uno:3",
+      "purple",
+      []
+    ],
+    [
+      "tx_lcd:D7",
+      "tx_uno:7",
+      "brown",
+      []
+    ],
+    [
+      "tx_btn:1.l",
+      "tx_uno:2",
+      "cyan",
+      []
+    ],
+    [
+      "tx_btn:2.l",
+      "tx_uno:GND.2",
+      "black",
+      []
+    ],
+    [
+      "tx_uno:8",
+      "tx_rtx:1",
+      "orange",
+      []
+    ],
+    [
+      "rx_lcd:GND",
+      "rx_uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "rx_lcd:VCC",
+      "rx_uno:5V",
+      "red",
+      []
+    ],
+    [
+      "rx_lcd:SDA",
+      "rx_uno:A4",
+      "blue",
+      []
+    ],
+    [
+      "rx_lcd:SCL",
+      "rx_uno:A5",
+      "gold",
+      []
+    ],
+    [
+      "rx_rrx:2",
+      "rx_uno:A0",
+      "orange",
+      []
+    ],
+    [
+      "rx_uno:A0",
+      "rx_rpd1:1",
+      "orange",
+      []
+    ],
+    [
+      "rx_rpd1:2",
+      "rx_rpd2:1",
+      "gray",
+      []
+    ],
+    [
+      "rx_rpd2:2",
+      "rx_uno:GND.2",
+      "black",
+      []
+    ]
+  ],
+  "dependencies": {}
+}
