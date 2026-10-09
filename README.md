@@ -46,26 +46,9 @@ TX D8 ─4,7k─ TX stieple ┊┊ C_m ≈ 0,5 pF ┊┊ RX stieple ─4,7k─ A
 τ = R·C ≈ 30 µs ir daudz īsāks par tona periodu (312 µs), tāpēc RX redz nevis taisnstūri,
 bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 
-![Principiālā shēma](docs/shema.svg)
-*Principiālā shēma: ko ar ko savieno un kur atrodas elektrodi.*
+![Vienkāršota shēma](docs/shema.svg)
 
-Šī **nav antena** un nav radioviļņi: viļņa garums pie 3,2 kHz ir ~95 km, un stieples ir
-miljoniem reižu īsākas. Tas ir tīrs elektriskais tuvlauks.
-
-![Apstrāde soli pa solim](docs/viz_sim.png)
-*`tools/viz.py --sim`: ADC paraugi → I/Q summēšana → I/Q plakne → bitu lēmumi.*
-
-## Rezultāti
-
-| Posms | Vārdi OK | Precīzas kopijas | 1→0 | 0→1 | signāls/fons |
-|---|---|---|---|---|---|
-| "Lielākais lēciens" (sākotnējais) | 0/10 | 10/173 | 58 % | 25 % | ~2× |
-| 4 paraugu I/Q (kļūda, sk. zemāk) | 0/10 | 0/180 | 100 % | 0 % | n/a |
-| 24 paraugu I/Q + relatīvais slieksnis | 7/10 | 154/174 | 5 % | 4 % | **9,5×** |
-| + kadru sinhronizācija | <!-- aizpildīt --> | | | | |
-
-Kļūdas noteiktas ar diviem bitiem, kuru vērtība ir zināma iepriekš: visi lielie burti
-`A`…`Z` ir `0x41`…`0x5A`, tātad **D6 vienmēr ir 1** un **D5 vienmēr ir 0**.
+*Vienkāršota shēma: ko ar ko savieno un kur atrodas elektrodi.*
 
 ## Aparatūra
 
@@ -82,7 +65,7 @@ Kļūdas noteiktas ar diviem bitiem, kuru vērtība ir zināma iepriekš: visi l
 | Stieple, 20–50 cm | 2 (+2 zemes pārim) | elektrodi |
 | 9 V vai 6×AA | 2 | barošana uz VIN |
 
-![Reālais saslēgums](docs/saslegums.svg)
+![Reālais saslēgums](docs/vienvirziena_realais.svg)
 *Reālais saslēgums: katrs vads tieši tā, kā tas iet uz plates un maizes dēļa. Krustojumi bez punkta nav savienoti.*
 
 **TX LCD:** RS→D12, E→D11, D4→D5, D5→D4, D6→D3, D7→D7, RW un K→GND, A caur 220 Ω→5V,
@@ -185,39 +168,3 @@ python3 tools/viz.py --sim --dist 30 --noise 4             # bez platēm
 
 `txmon.py` kopsavilkums: saņemto kopiju %, apgriezto bitu sadalījums, 1→0 pret 0→1
 (slieksnis par augstu vai par zemu), RX līmeņu mediānas un signāls/fons.
-
-## Fizika un zināmās problēmas
-
-- **Atgriezes ceļš.** Uz USB abām platēm ir kopēja zeme caur datoru, un saite izskatās
-  labāka nekā īstenībā. Uz baterijām atgriezes ceļš ir jāuzbūvē: zemes elektrodu pāris
-  vai bateriju bloki blakus.
-- **Baterijas pie svešā elektroda bojā saiti visvairāk.** Baterija ir plates zemes tīkla
-  daļa (~2 pF, vairāk nekā C_m) un ienes signālu ar pretēju fāzi. Lādētāji, LED un 50 Hz
-  lielākoties tiek izfiltrēti.
-- **Stieples attālums ietekmē maz.** Garām paralēlām stieplēm C ∝ 1/ln(d/r):
-  6,5 → 1,5 cm dod tikai ~1,4×. Daudz vairāk dod garāks paralēlais posms vai savītas stieples (~9×).
-- **RX mezgls pie 0 V.** Negatīvās smailes nogriežas, un 50 Hz brums modulē amplitūdu.
-
-## Eksperimenti
-
-| Traucējums | S | F | Saite |
-|---|---|---|---|
-| <!-- Atskaite --> | | | |
-| Telefona lādētājs | | | |
-| LED spuldze | | | |
-| 9 V baterija blakus | | | sabrūk |
-| Zemēta folija starp elektrodiem | | | |
-| Tonis 3205 Hz no telefona | | | |
-| Tonis 3405 Hz no telefona | | | |
-
-## Tālāk
-
-- [ ] zemes elektrodu pāris un tests ar abām platēm uz baterijām
-- [ ] Manchester kodējums: nav garu klusumu kadrā, lēmums bez sliekšņa
-- [ ] RX ievada nobīde uz 2,5 V (abas frontes, nekāda nogriešana)
-- [ ] bitu balsošana starp 3 kopijām
-- [ ] divvirzienu režīms ar ACK (`sendReliable` / `receiveReliable` jau ir `saite.h`)
-
-## Licence
-
-<!-- piem. MIT -->

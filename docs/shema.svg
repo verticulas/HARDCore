@@ -12,10 +12,8 @@
 
     <rect x="50" y="44" width="170" height="46" rx="6" fill="#F1EFE8" stroke="#888780"/>
     <text x="135" y="62" text-anchor="middle" font-weight="bold">Barošana</text>
-    <text x="135" y="80" text-anchor="middle" font-size="12">9 V / 6×AA uz VIN</text>
     <rect x="540" y="44" width="170" height="46" rx="6" fill="#F1EFE8" stroke="#888780"/>
     <text x="625" y="62" text-anchor="middle" font-weight="bold">Barošana</text>
-    <text x="625" y="80" text-anchor="middle" font-size="12">9 V / 6×AA uz VIN</text>
 
     <!-- TX Uno -->
     <rect x="50" y="110" width="170" height="280" rx="8" fill="#F1EFE8" stroke="#888780"/>
@@ -114,13 +112,8 @@
   <!-- Antēnu parametri -->
   <rect x="250" y="420" width="260" height="100" rx="8" fill="#FAECE7" stroke="#993C1D"/>
   <g font-size="12" fill="#712B13">
-    <text x="380" y="440" text-anchor="middle" font-size="13" font-weight="bold">Elektrodi (stieples)</text>
+    <text x="380" y="440" text-anchor="middle" font-size="13" font-weight="bold">Antēnas</text>
     <text x="265" y="459"><tspan font-weight="bold">L</tspan> garums: 20–50 cm, abām vienāds</text>
     <text x="265" y="476"><tspan font-weight="bold">d</tspan> attālums: 1–15 cm, paralēli</text>
-    <text x="265" y="493">brīvais gals var palikt izolēts</text>
-    <text x="265" y="510">nav detaļas: C ≈ 0,1–1 pF gaisā</text>
   </g>
-
-  <text x="380" y="546" font-size="12" fill="#5F5E5A" text-anchor="middle">Bez datora un bez atpakaļceļa. Katrs kadrs 3 reizes, beigās kontrolsumma.</text>
-  <text x="380" y="564" font-size="12" fill="#5F5E5A" text-anchor="middle">LCD vadus velc prom no elektrodiem. Pilns saslēgums: saslegums.svg</text>
 </svg>
