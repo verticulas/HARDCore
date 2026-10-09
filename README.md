@@ -12,7 +12,7 @@ Datus nes elektriskais lauks starp divām paralēlām stieplēm.
 ## Darbības princips
 
 TX (Raidītāj UNO) ieslēdz un izslēdz 3205 Hz toni uz D8 (ieslēgts = 1, izslēgts = 0). Caur 4,7 kΩ tonis
-nonāk TX stieplē. RX (Uztvērēj UNO) stieple atrodas paralēli tai, un abas kopā veido niecīgu kondensatoru.
+nonāk TX stieplē. RX (Uztvērēj UNO) stieple atrodas paralēli tai, un abas kopā veido niecīgu/primitīvu kondensatoru.
 
 ![Vienkāršota shēma](docs/shema.svg)
 
