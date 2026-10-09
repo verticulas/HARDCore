@@ -1,36 +1,18 @@
-# HARDCore: bezvadu saite starp diviem Arduino ar divām stieplēm
+# HARDCore
+
+**Bezvadu saite starp diviem Arduino ar divām stieplēm**
 
 Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
-Datus nes elektriskais lauks starp divām paralēlām stieplēm (kapacitīvā tuvlauka saite,
-~0,5 pF). Multimetrs omu režīmā starp platēm rāda bezgalību.
+Datus nes elektriskais lauks starp divām paralēlām stieplēm. Multimetrs omu režīmā starp platēm rāda bezgalību.
 
 <!-- Video: ievelc šeit GitHub tīmekļa redaktorā (mp4, < 10 MB) -->
-<!-- Īss klips: poga → TX LCD → RX LCD "OK", multimetrs rāda ∞ -->
 
 | | |
 |---|---|
 | Nesējfrekvence | 3205 Hz (`tone(3170)` uz Timer2 reāli dod 3205,13 Hz) |
 | Ātrums | 50 ms/bits, ~11,7 s uz 4 burtu vārdu (ar 3 atkārtojumiem) |
-| Attālums | ~6,5 cm starp stieplēm, 20–50 cm paralēlais posms |
+| Attālums | ~6,5 cm starp stieplēm, 25 cm paralēlais posms |
 | Uztvērējs | sinhronā I/Q detekcija, 24 paraugi uz tona periodu |
-
----
-
-## Saturs
-
-1. [Kā tas strādā](#kā-tas-strādā)
-2. [Rezultāti](#rezultāti)
-3. [Aparatūra](#aparatūra)
-4. [Protokols](#protokols)
-5. [Uztvērējs](#uztvērējs)
-6. [Projekta struktūra](#projekta-struktūra)
-7. [Palaišana](#palaišana)
-8. [Diagnostikas rīki](#diagnostikas-rīki)
-9. [Fizika un zināmās problēmas](#fizika-un-zināmās-problēmas)
-10. [Eksperimenti](#eksperimenti)
-11. [Tālāk](#tālāk)
-
----
 
 ## Kā tas strādā
 
@@ -46,26 +28,15 @@ TX D8 ─4,7k─ TX stieple ┊┊ C_m ≈ 0,5 pF ┊┊ RX stieple ─4,7k─ A
 τ = R·C ≈ 30 µs ir daudz īsāks par tona periodu (312 µs), tāpēc RX redz nevis taisnstūri,
 bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 
-![Principiālā shēma](docs/shema.svg)
-*Principiālā shēma: ko ar ko savieno un kur atrodas elektrodi.*
+![Vienkāršota shēma](docs/shema.svg)
 
-Šī **nav antena** un nav radioviļņi: viļņa garums pie 3,2 kHz ir ~95 km, un stieples ir
-miljoniem reižu īsākas. Tas ir tīrs elektriskais tuvlauks.
+*Vienkāršota shēma: ko ar ko savieno un kur atrodas elektrodi.*
 
-![Apstrāde soli pa solim](docs/viz_sim.png)
-*`tools/viz.py --sim`: ADC paraugi → I/Q summēšana → I/Q plakne → bitu lēmumi.*
+![RX līmenis laikā](docs/rx_cal.png)
 
-## Rezultāti
-
-| Posms | Vārdi OK | Precīzas kopijas | 1→0 | 0→1 | signāls/fons |
-|---|---|---|---|---|---|
-| "Lielākais lēciens" (sākotnējais) | 0/10 | 10/173 | 58 % | 25 % | ~2× |
-| 4 paraugu I/Q (kļūda, sk. zemāk) | 0/10 | 0/180 | 100 % | 0 % | n/a |
-| 24 paraugu I/Q + relatīvais slieksnis | 7/10 | 154/174 | 5 % | 4 % | **9,5×** |
-| + kadru sinhronizācija | <!-- aizpildīt --> | | | | |
-
-Kļūdas noteiktas ar diviem bitiem, kuru vērtība ir zināma iepriekš: visi lielie burti
-`A`…`Z` ir `0x41`…`0x5A`, tātad **D6 vienmēr ir 1** un **D5 vienmēr ir 0**.
+*RX līmenis laikā ([data/rx_cal.csv](data/rx_cal.csv), RX `MODE=1`, vecais "lielākā lēciena"
+mērījums), zīmēts ar [tools/plot.py](tools/plot.py). Kad TX raida, līmenis paceļas virs fona,
+bet tikai ~2×. Tieši tāpēc vēlāk uztvērējs pārgāja uz I/Q detekciju.*
 
 ## Aparatūra
 
@@ -82,7 +53,8 @@ Kļūdas noteiktas ar diviem bitiem, kuru vērtība ir zināma iepriekš: visi l
 | Stieple, 20–50 cm | 2 (+2 zemes pārim) | elektrodi |
 | 9 V vai 6×AA | 2 | barošana uz VIN |
 
-![Reālais saslēgums](docs/saslegums.svg)
+![Reālais saslēgums](docs/vienvirziena_realais.svg)
+
 *Reālais saslēgums: katrs vads tieši tā, kā tas iet uz plates un maizes dēļa. Krustojumi bez punkta nav savienoti.*
 
 **TX LCD:** RS→D12, E→D11, D4→D5, D5→D4, D6→D3, D7→D7, RW un K→GND, A caur 220 Ω→5V,
@@ -98,6 +70,9 @@ un kontrolsumma.
 kadrs:  [start=1][seq][D6..D0][paritāte]   10 biti × 50 ms, tad 150 ms klusuma
 vārds:  burts₁ … burtsₙ, EOT (0x04), summa (Σ & 0x7F)
 ```
+
+Kods: [lib/saite/saite.h](lib/saite/saite.h) (`sendByte`, `receiveByte`),
+[src/transmitter.cpp](src/transmitter.cpp), [src/reciever.cpp](src/reciever.cpp).
 
 - **seq** (augstākais bits) mainās katrā kadrā, un RX atmet atkārtotās kopijas;
 - katru kadru sūta **3 reizes**;
@@ -123,44 +98,67 @@ slieksni, un visi datu biti nonāca zem tā: 100 % starti, 0 % vieninieki.
 
 ```
 HARDCore/
-├── platformio.ini
+├── platformio.ini            vides tx un rx
 ├── src/
-│   ├── transmitter.cpp     TX: poga, seriālā konsole, 16 pinu LCD
-│   └── reciever.cpp        RX: MODE 0–3, I2C LCD
-├── lib/saite/saite.h       kopīgais protokols un uztvērējs
+│   ├── transmitter.cpp       TX: poga, seriālā konsole, 16 pinu LCD
+│   ├── reciever.cpp          RX: MODE 0–3, I2C LCD
+│   └── *.txt                 iepriekšējās versijas un uzdevumi (netiek kompilēti)
+├── lib/saite/saite.h         kopīgais protokols un uztvērējs
 ├── tools/
-│   ├── txmon.py            TX↔RX salīdzināšana pa bitiem, statistika
-│   ├── linkdiag.py         50 logi kadrā: nobīdes, loga un sliekšņa meklēšana
-│   ├── viz.py              apstrādes vizualizācija (īsti dati vai simulācija)
-│   ├── logger.py, live.py, plot.py, fold.py
-├── wokwi/                  tx/, rx/, abi/ simulācijas diagrammas
-├── data/                   mērījumi (.csv, .jsonl)
-└── docs/                   shēmas, attēli
+│   ├── txmon.py              TX↔RX salīdzināšana pa bitiem, statistika
+│   ├── linkdiag.py           50 logi kadrā: nobīdes, loga un sliekšņa meklēšana
+│   ├── viz.py                apstrādes vizualizācija (īsti dati vai simulācija)
+│   ├── logger.py             seriālais ports → CSV ar datora laiku
+│   ├── live.py               reāllaika grafiks
+│   └── plot.py               grafiks no CSV
+├── wokwi_diagrams/           tx/, rx/, abi/ Wokwi simulācijas
+├── data/                     mērījumi
+└── docs/                     shēmas un attēli
 ```
+
+| Fails | Kas tas ir |
+|---|---|
+| [src/transmitter.cpp](src/transmitter.cpp) | TX firmware |
+| [src/reciever.cpp](src/reciever.cpp) | RX firmware |
+| [lib/saite/saite.h](lib/saite/saite.h) | protokols, I/Q detektors, sliekšņi |
+| [data/rx_cal.csv](data/rx_cal.csv) | RX kalibrēšanas žurnāls (`laiks_pc, t_ms, līmenis`) |
+| [data/tx.csv](data/tx.csv) | TX puses žurnāls |
+| [data/firstWorking.csv](data/firstWorking.csv) | pirmais ieraksts, kurā bija redzams TX ritms |
+| [docs/shema.svg](docs/shema.svg) | vienkāršota shēma |
+| [docs/vienvirziena_realais.svg](docs/vienvirziena_realais.svg) | reālais saslēgums |
+| [docs/viz_sim.png](docs/viz_sim.png) | `viz.py --sim` piemērs |
 
 ## Palaišana
 
+Vajag [PlatformIO](https://platformio.org/) (VS Code paplašinājums vai `pio` CLI) un Python 3.
+
+```bash
+git clone https://github.com/verticulas/HARDCore.git
+cd HARDCore
+python3 -m pip install pyserial numpy matplotlib
+```
+
+**Porti.** [platformio.ini](platformio.ini) satur `upload_port` / `monitor_port` ar konkrētu
+plašu seriālajiem numuriem. Savējos atradīsi ar `ls /dev/serial/by-id/` (pieslēdz pa vienai
+platei) un ieraksti tos vietā. Vari arī rindas izdzēst, un tad PlatformIO paņems pirmo
+pieslēgto plati.
+
 ```ini
-[env]
-platform = atmelavr
-board = uno
-framework = arduino
-monitor_speed = 9600
-
-[env:tx]
-build_src_filter = +<transmitter.cpp>
-lib_deps = arduino-libraries/LiquidCrystal
-
 [env:rx]
 build_src_filter = +<reciever.cpp>
 lib_deps = marcoschwartz/LiquidCrystal_I2C
-build_flags = -D SAITE_IQ
+build_flags = -D SAITE_IQ          ; I/Q detektors; bez šīs rindas vecais mērījums
 ```
 
 ```bash
+pio run                       # kompilē abus
 pio run -e tx -t upload
 pio run -e rx -t upload
+pio device monitor -e tx --echo
 ```
+
+Ērtībai portus var ielikt mainīgajos (fish: `set -Ux TX /dev/serial/by-id/...`,
+bash/zsh: `export TX=/dev/serial/by-id/...`).
 
 **RX režīmi** (`reciever.cpp`, `MODE`):
 
@@ -186,38 +184,9 @@ python3 tools/viz.py --sim --dist 30 --noise 4             # bez platēm
 `txmon.py` kopsavilkums: saņemto kopiju %, apgriezto bitu sadalījums, 1→0 pret 0→1
 (slieksnis par augstu vai par zemu), RX līmeņu mediānas un signāls/fons.
 
-## Fizika un zināmās problēmas
+## Wokwi
 
-- **Atgriezes ceļš.** Uz USB abām platēm ir kopēja zeme caur datoru, un saite izskatās
-  labāka nekā īstenībā. Uz baterijām atgriezes ceļš ir jāuzbūvē: zemes elektrodu pāris
-  vai bateriju bloki blakus.
-- **Baterijas pie svešā elektroda bojā saiti visvairāk.** Baterija ir plates zemes tīkla
-  daļa (~2 pF, vairāk nekā C_m) un ienes signālu ar pretēju fāzi. Lādētāji, LED un 50 Hz
-  lielākoties tiek izfiltrēti.
-- **Stieples attālums ietekmē maz.** Garām paralēlām stieplēm C ∝ 1/ln(d/r):
-  6,5 → 1,5 cm dod tikai ~1,4×. Daudz vairāk dod garāks paralēlais posms vai savītas stieples (~9×).
-- **RX mezgls pie 0 V.** Negatīvās smailes nogriežas, un 50 Hz brums modulē amplitūdu.
-
-## Eksperimenti
-
-| Traucējums | S | F | Saite |
-|---|---|---|---|
-| <!-- Atskaite --> | | | |
-| Telefona lādētājs | | | |
-| LED spuldze | | | |
-| 9 V baterija blakus | | | sabrūk |
-| Zemēta folija starp elektrodiem | | | |
-| Tonis 3205 Hz no telefona | | | |
-| Tonis 3405 Hz no telefona | | | |
-
-## Tālāk
-
-- [ ] zemes elektrodu pāris un tests ar abām platēm uz baterijām
-- [ ] Manchester kodējums: nav garu klusumu kadrā, lēmums bez sliekšņa
-- [ ] RX ievada nobīde uz 2,5 V (abas frontes, nekāda nogriešana)
-- [ ] bitu balsošana starp 3 kopijām
-- [ ] divvirzienu režīms ar ACK (`sendReliable` / `receiveReliable` jau ir `saite.h`)
-
-## Licence
-
-<!-- piem. MIT -->
+[wokwi_diagrams/](wokwi_diagrams/) satur trīs simulācijas: `tx/` un `rx/` (katra ar savu
+firmware no `.pio/build/`) un `abi/` (abas plates vienā attēlā, darbojas viena).
+VS Code: `pio run -e tx` → F1 → `Wokwi: Select Config File` → `wokwi_diagrams/tx/wokwi.toml`
+→ `Wokwi: Start Simulator`. Kapacitīvo saiti starp stieplēm Wokwi nesimulē.
