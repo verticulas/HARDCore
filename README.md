@@ -32,7 +32,7 @@ bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
 
 ![RX līmenis laikā](docs/rx_cal.png)
 
-*RX līmenis laikā ([data/rx_cal.csv](data/rx_cal.csv)), zīmēts ar [tools/plot.py](tools/plot.py). Kad TX raida, līmenis paceļas virs fona.*
+*Raw RX dati ([data/rx_cal.csv](data/rx_cal.csv)), zīmēts ar [tools/plot.py](tools/plot.py). Kad TX raida, līmenis paceļas virs fona.*
 
 ## Aparatūra
 
