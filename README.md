@@ -7,7 +7,6 @@ Datus nes elektriskais lauks starp divām paralēlām stieplēm.
 | | |
 |---|---|
 | Nesējfrekvence | 3205 Hz |
-| Ātrums | 50 ms/bits |
 | Uztvērējs | sinhronā I/Q detekcija, 24 paraugi uz tona periodu |
 
 ## Darbības princips
