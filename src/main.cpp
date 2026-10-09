@@ -1,24 +1,38 @@
 #include <Arduino.h>
 
-const int BIT = 50, FREQ = 3170, PIN = 8;
+const bool CAL = true;   // true: kalibrēšana, false: dekodēšana
+const int  TH  = 10;     // slieksnis, ieraksti pēc kalibrēšanas!
+const int  BIT = 50;     // jāsakrīt ar raidītāju
 
-void sendByte(byte b) {
-  tone(PIN, FREQ); delay(BIT);
-  for (int i = 7; i >= 0; i--) {
-    if (bitRead(b, i)) tone(PIN, FREQ); else noTone(PIN);
-    delay(BIT);
+int measure(int ms) {                        // lielākais lēciens starp paraugiem
+  int prev = analogRead(A0), best = 0;
+  unsigned long t = millis();
+  while (millis() - t < (unsigned long)ms) {
+    int v = analogRead(A0);
+    if (v - prev > best) best = v - prev;
+    prev = v;
   }
-  noTone(PIN); delay(2 * BIT);
+  return best;
 }
 
-char c = 'A';
-
-void setup() { pinMode(LED_BUILTIN, OUTPUT); }
+void setup() {
+  ADCSRA = (ADCSRA & 0xF8) | 0x04;           // ātrais ADC, ķer īsos 2 MΩ impulsus
+  Serial.begin(9600);
+}
 
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);     // deg, kamēr raida
-  sendByte(c);
-  digitalWrite(LED_BUILTIN, LOW);
-  c = (c == 'Z') ? 'A' : c + 1;
-  delay(1000);
+  if (CAL) {                                 // kalibrēšanas režīms
+    Serial.println(measure(30));
+    return;
+  }
+
+  if (measure(5) < TH) return;               // gaida starta bitu
+  unsigned long t0 = millis();
+  byte b = 0;
+  for (int i = 0; i < 8; i++) {
+    while (millis() - t0 < (unsigned long)(BIT * (i + 1) + 10)) ;
+    if (measure(30) > TH) bitSet(b, 7 - i);
+  }
+  while (millis() - t0 < (unsigned long)(BIT * 10)) ;
+  Serial.write(b);
 }
