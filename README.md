@@ -11,26 +11,8 @@ Datus nes elektriskais lauks starp divām paralēlām stieplēm (kapacitīvā tu
 |---|---|
 | Nesējfrekvence | 3205 Hz (`tone(3170)` uz Timer2 reāli dod 3205,13 Hz) |
 | Ātrums | 50 ms/bits, ~11,7 s uz 4 burtu vārdu (ar 3 atkārtojumiem) |
-| Attālums | ~6,5 cm starp stieplēm, 20–50 cm paralēlais posms |
+| Attālums | ~6,5 cm starp stieplēm, 25 cm paralēlais posms |
 | Uztvērējs | sinhronā I/Q detekcija, 24 paraugi uz tona periodu |
-
----
-
-## Saturs
-
-1. [Kā tas strādā](#kā-tas-strādā)
-2. [Rezultāti](#rezultāti)
-3. [Aparatūra](#aparatūra)
-4. [Protokols](#protokols)
-5. [Uztvērējs](#uztvērējs)
-6. [Projekta struktūra](#projekta-struktūra)
-7. [Palaišana](#palaišana)
-8. [Diagnostikas rīki](#diagnostikas-rīki)
-9. [Fizika un zināmās problēmas](#fizika-un-zināmās-problēmas)
-10. [Eksperimenti](#eksperimenti)
-11. [Tālāk](#tālāk)
-
----
 
 ## Kā tas strādā
 
@@ -38,10 +20,9 @@ TX ieslēdz un izslēdz 3205 Hz toni uz D8 (ieslēgts = 1, izslēgts = 0). Caur 
 nonāk TX stieplē. RX stieple atrodas paralēli tai, un abas kopā veido niecīgu kondensatoru
 C_m. RX pusē tam pretī ir ievada kapacitāte C_in ≈ 15 pF un 2 MΩ pull-down:
 
-```
-TX D8 ─4,7k─ TX stieple ┊┊ C_m ≈ 0,5 pF ┊┊ RX stieple ─4,7k─ A0 ─┬─ 2 MΩ ─ GND
-                                                                  └─ C_in ≈ 15 pF
-```
+![Raw data](image.png)
+
+*Raw dati* no [data/rx_cal.csv](data/rx_cal.csv), vizualizēts ar [tools/plot.py](tools/plot.py)
 
 τ = R·C ≈ 30 µs ir daudz īsāks par tona periodu (312 µs), tāpēc RX redz nevis taisnstūri,
 bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
