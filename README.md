@@ -1,30 +1,19 @@
-**Bezvadu saite starp diviem Arduino ar divām stieplēm**
+## Bezvadu komunikācija starp diviem Arduino
 
-Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
-Datus nes elektriskais lauks starp divām paralēlām stieplēm. Multimetrs omu režīmā starp platēm rāda bezgalību.
+Datus nes elektriskais lauks starp divām paralēlām stieplēm.
 
-<!-- Video: ievelc šeit GitHub tīmekļa redaktorā (mp4, < 10 MB) -->
+### [Video demo](https://www.youtube.com/watch?v=xBwofJppcmM)
 
 | | |
 |---|---|
-| Nesējfrekvence | 3205 Hz (`tone(3170)` uz Timer2 reāli dod 3205,13 Hz) |
-| Ātrums | 50 ms/bits, ~11,7 s uz 4 burtu vārdu (ar 3 atkārtojumiem) |
-| Attālums | ~6,5 cm starp stieplēm, 25 cm paralēlais posms |
+| Nesējfrekvence | 3205 Hz |
+| Ātrums | 50 ms/bits |
 | Uztvērējs | sinhronā I/Q detekcija, 24 paraugi uz tona periodu |
 
-## Kā tas strādā
+## Darbības princips
 
-TX ieslēdz un izslēdz 3205 Hz toni uz D8 (ieslēgts = 1, izslēgts = 0). Caur 4,7 kΩ tonis
-nonāk TX stieplē. RX stieple atrodas paralēli tai, un abas kopā veido niecīgu kondensatoru
-C_m. RX pusē tam pretī ir ievada kapacitāte C_in ≈ 15 pF un 2 MΩ pull-down:
-
-```
-TX D8 ─4,7k─ TX stieple ┊┊ C_m ≈ 0,5 pF ┊┊ RX stieple ─4,7k─ A0 ─┬─ 2 MΩ ─ GND
-                                                                  └─ C_in ≈ 15 pF
-```
-
-τ = R·C ≈ 30 µs ir daudz īsāks par tona periodu (312 µs), tāpēc RX redz nevis taisnstūri,
-bet **īsas smailes katrā frontē** (~5 V · C_m/C_in ≈ 35 ADC vienības).
+TX (Raidītāj UNO) ieslēdz un izslēdz 3205 Hz toni uz D8 (ieslēgts = 1, izslēgts = 0). Caur 4,7 kΩ tonis
+nonāk TX stieplē. RX (Uztvērēj UNO) stieple atrodas paralēli tai, un abas kopā veido niecīgu kondensatoru.
 
 ![Vienkāršota shēma](docs/shema.svg)
 
@@ -66,15 +55,6 @@ un kontrolsumma.
 kadrs:  [start=1][seq][D6..D0][paritāte]   10 biti × 50 ms, tad 150 ms klusuma
 vārds:  burts₁ … burtsₙ, EOT (0x04), summa (Σ & 0x7F)
 ```
-
-Kods: [lib/saite/saite.h](lib/saite/saite.h) (`sendByte`, `receiveByte`),
-[src/transmitter.cpp](src/transmitter.cpp), [src/reciever.cpp](src/reciever.cpp).
-
-- **seq** (augstākais bits) mainās katrā kadrā, un RX atmet atkārtotās kopijas;
-- katru kadru sūta **3 reizes**;
-- **pāra paritāte** katram kadram, **kontrolsumma** vārda beigās → RX rāda `OK` / `KLUDA` / `NEPILNS`;
-- **sinhronizācija:** RX pieņem starta bitu tikai pēc ≥120 ms klusuma, tāpēc tas nevar
-  iekrist kadra vidū un iestrēgt nobīdītā ritmā.
 
 ## Uztvērējs
 
@@ -139,7 +119,7 @@ pieslēgto plati.
 [env:rx]
 build_src_filter = +<reciever.cpp>
 lib_deps = marcoschwartz/LiquidCrystal_I2C
-build_flags = -D SAITE_IQ          ; I/Q detektors; bez šīs rindas vecais mērījums
+build_flags = -D SAITE_IQ
 ```
 
 ```bash
