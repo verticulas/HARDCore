@@ -1,11 +1,9 @@
-# HARDCore: bezvadu saite starp diviem Arduino ar divām stieplēm
+Bezvadu saite starp diviem Arduino ar divām stieplēm
 
 Divi Arduino Uno sūta teksta ziņas viens otram **bez neviena vada starp platēm**.
-Datus nes elektriskais lauks starp divām paralēlām stieplēm (kapacitīvā tuvlauka saite,
-~0,5 pF). Multimetrs omu režīmā starp platēm rāda bezgalību.
+Datus nes elektriskais lauks starp divām paralēlām stieplēm. Multimetrs omu režīmā starp platēm rāda bezgalību.
 
 <!-- Video: ievelc šeit GitHub tīmekļa redaktorā (mp4, < 10 MB) -->
-<!-- Īss klips: poga → TX LCD → RX LCD "OK", multimetrs rāda ∞ -->
 
 | | |
 |---|---|
