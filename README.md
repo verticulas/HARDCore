@@ -41,7 +41,7 @@ nonāk TX stieplē. RX (Uztvērēj UNO) stieple atrodas paralēli tai, un abas k
 
 *Reālais saslēgums: katrs vads tieši tā, kā tas iet uz plates un maizes dēļa. Krustojumi bez punkta nav savienoti.*
 
-L = 25 cm
+L = 25 cm,
 d = 6 cm
 
 **TX LCD:** RS→D12, E→D11, D4→D5, D5→D4, D6→D3, D7→D7, RW un K→GND, A caur 220 Ω→5V,
